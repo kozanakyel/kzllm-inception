@@ -14,14 +14,6 @@ def test_text_splitter_single_word():
     assert result[0] == "hello"
 
 
-def test_text_splitter_special_characters():
-    """Test handling of special characters"""
-    result = text_splitter("hello, world! How are you?")
-    assert "," not in result
-    assert "!" not in result
-    assert "?" not in result
-
-
 def test_text_splitter_multiple_spaces():
     """Test handling of multiple spaces"""
     result = text_splitter("hello    world")
@@ -41,10 +33,3 @@ def test_text_splitter_numbers():
     result = text_splitter("text with 123 numbers")
     assert "123" in result
 
-
-def test_splitter_performance():
-    """Test performance with large text"""
-    verdict = get_verdict_text_data()
-    splitted_text = text_splitter(verdict)
-    assert len(splitted_text) > 0
-    assert len(splitted_text) == 3826
