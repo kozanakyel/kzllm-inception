@@ -15,6 +15,8 @@ def sample_vocab():
         ",": 7,
         ".": 8,
         "!": 9,
+        "<|endoftext|>": 10,
+        "<|unk|>": 11,
     }
 
 
@@ -77,3 +79,45 @@ def test_decode_unknown_ids(tokenizer: SimpleTokenizerV1):
     ids = [0, 1, 999]  # 999 is not in the vocabulary
     with pytest.raises(KeyError):
         tokenizer.decode(ids)
+
+
+def test_encode_with_endoftext(tokenizer: SimpleTokenizerV1):
+    """Test encoding with endoftext token"""
+    text = "hello world <|endoftext|>"
+    expected_ids = [0, 1, 10]
+    assert tokenizer.encode(text) == expected_ids
+
+
+def test_decode_with_endoftext(tokenizer: SimpleTokenizerV1):
+    """Test decoding with endoftext token"""
+    ids = [0, 1, 10]  # hello world <|endoftext|>
+    expected_text = "hello world <|endoftext|>"
+    assert tokenizer.decode(ids) == expected_text
+
+
+def test_encode_with_unk(tokenizer: SimpleTokenizerV1):
+    """Test encoding with unk token"""
+    text = "hello world <|unk|>"
+    expected_ids = [0, 1, 11]
+    assert tokenizer.encode(text) == expected_ids
+
+
+def test_decode_with_unk(tokenizer: SimpleTokenizerV1):
+    """Test decoding with unk token"""
+    ids = [0, 1, 11]  # hello world <|unk|>
+    expected_text = "hello world <|unk|>"
+    assert tokenizer.decode(ids) == expected_text
+
+
+def test_encode_with_both_special_tokens(tokenizer: SimpleTokenizerV1):
+    """Test encoding with both special tokens"""
+    text = "hello <|unk|> world <|endoftext|>"
+    expected_ids = [0, 11, 1, 10]
+    assert tokenizer.encode(text) == expected_ids
+
+
+def test_decode_with_both_special_tokens(tokenizer: SimpleTokenizerV1):
+    """Test decoding with both special tokens"""
+    ids = [0, 11, 1, 10]  # hello <|unk|> world <|endoftext|>
+    expected_text = "hello <|unk|> world <|endoftext|>"
+    assert tokenizer.decode(ids) == expected_text
