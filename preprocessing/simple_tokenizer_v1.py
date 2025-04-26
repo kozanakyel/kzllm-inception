@@ -3,6 +3,7 @@ from preprocessing.text_splitter import text_splitter
 
 
 class SimpleTokenizerV1:
+    "for learning the working mechanism of tiktoken tokenizer approaches"
     def __init__(self, vocab: dict):
         self.str_to_int = vocab
         self.int_to_str = {v: k for k, v in vocab.items()}
