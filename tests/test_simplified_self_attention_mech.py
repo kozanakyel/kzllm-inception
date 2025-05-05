@@ -58,3 +58,22 @@ def test_calculate_context_vec():  # ...  to z
         context_vec_2 += attn_weights_2_naive[i] * x_i
 
     print(f"context vector: {context_vec_2}")
+
+
+def test_calculate_context_vectors_z():
+    # attn_scores = torch.empty(6, 6)
+    # for i, x_i in enumerate(inputs):
+    #     for j, x_j in enumerate(inputs):
+    #         attn_scores[i, j] = torch.dot(x_i, x_j)
+
+    # performance based on matrix multiplication
+    attn_scores = inputs @ inputs.T  # x_i @ x_j = w_i,j
+    print(attn_scores)  # w -> attention scores
+
+    attn_weights = torch.softmax(attn_scores, dim=1)  # w->a  //softmax on the rows
+    print(attn_weights)  # a -> attention weights
+    
+    print("All row sums:", attn_weights.sum(dim=-1))
+    
+    all_context_vecs = attn_weights @ inputs  # a->z //softmax on the rows
+    print(all_context_vecs)  # z -> context vectors
