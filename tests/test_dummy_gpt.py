@@ -1,6 +1,8 @@
 import pytest
 import tiktoken
 import torch
+import torch.nn as nn
+from models.gelu import GELU, FeedForward
 
 from core.settings import GPT_CONFIG_124M
 from models.dummy_gpt_model import DummyGPTModel
@@ -52,3 +54,27 @@ def test_seqential_process():
     var = out_ln.var(dim=-1, keepdim=True, unbiased=False)
     print("mean", mean)
     print("var", var)
+    
+def test_gelu():
+    import matplotlib.pyplot as plt
+    gelu, relu = GELU(), nn.ReLU()
+    
+    x = torch.linspace(-3, 3, 1000)
+    y_gelu = gelu(x)
+    y_relu = relu(x)
+    plt.figure(figsize=(8,3))
+    for i, (y, label) in enumerate(zip([y_gelu, y_relu], ["GELU", "ReLU"]), 1):
+        plt.subplot(1, 2, i)
+        plt.plot(x, y)
+        plt.title(f"{label} activation function")
+        plt.xlabel("x")
+        plt.ylabel(f"{label}(x)")
+        plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+    
+def test_feedforward():
+    ffn  = FeedForward(GPT_CONFIG_124M)
+    x = torch.rand(2,3,768)
+    out = ffn(x)
+    print("FeedForward output shape:", out.shape)

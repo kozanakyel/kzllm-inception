@@ -1,0 +1,1 @@
+Self study for understanding the llm based GPT model training- pretraining, finetuneing with instructions steps, with detailed overview.
