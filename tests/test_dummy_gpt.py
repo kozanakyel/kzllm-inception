@@ -6,7 +6,9 @@ from models.gelu import GELU, FeedForward
 
 from core.settings import GPT_CONFIG_124M
 from models.dummy_gpt_model import DummyGPTModel
+from models.gpt_model import GPTModel
 from models.layer_normalization import LayerNorm
+from models.transformer_block import TransformerBlock
 
 
 def test_bacth_dummy():
@@ -78,3 +80,36 @@ def test_feedforward():
     x = torch.rand(2,3,768)
     out = ffn(x)
     print("FeedForward output shape:", out.shape)
+    assert out.shape == (2, 3, 768), "FeedForward output shape mismatch"
+    
+    
+def test_transformer_block():
+    torch.manual_seed(123)
+    x = torch.rand(2, 4, 768)
+    block = TransformerBlock(GPT_CONFIG_124M)
+    output = block(x)
+    print("Input shape:", x.shape)
+    print("Output shape:", output.shape)
+    assert output.shape == (2, 4, 768), "Transformer block output shape mismatch"
+    
+    
+def test_gpt_model():
+    tokenizer = tiktoken.get_encoding("gpt2")
+    batch = []
+    txt1 = "Every effort moves you"
+    txt2 = "Every day holds a"
+    
+    batch.append(torch.tensor(tokenizer.encode(txt1)))
+    batch.append(torch.tensor(tokenizer.encode(txt2)))
+    batch = torch.stack(batch, dim=0)
+    print("batch", batch)
+    
+    torch.manual_seed(123)
+    model = GPTModel(GPT_CONFIG_124M)
+    out = model(batch)
+    print("Input batch:\n", batch)
+    print("\nOutput shape:", out.shape)
+    print(out)
+    
+
+
