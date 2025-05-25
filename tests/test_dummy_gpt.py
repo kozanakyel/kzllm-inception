@@ -111,5 +111,7 @@ def test_gpt_model():
     print("\nOutput shape:", out.shape)
     print(out)
     
+    model.eval()
+    
 
 
